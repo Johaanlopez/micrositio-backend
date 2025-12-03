@@ -1,0 +1,13 @@
+node_modules/
+dist/
+.env
+.env.*.local
+npm-debug.log*
+
+logs/
+*.log
+temp-hash.js
+# Ignora archivos de backup o dumps si los generas
+*.bak
+*.tmp
+*.dump
