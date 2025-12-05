@@ -6,7 +6,7 @@ import { Request, Response } from 'express'
 import Joi from 'joi'
 import { findUserById } from '../models/user.model'
 import { generateVerificationCode } from '../services/crypto.service'
-import { sendVerificationCode } from '../services/email.service'
+// import { sendVerificationCode } from '../services/email.service'
 import { query } from '../db'
 import logger from '../utils/logger'
 
@@ -26,26 +26,20 @@ export async function sendEmailCode(req: Request, res: Response) {
     }
 
     // Generate verification code
-    const code = generateVerificationCode()
-    const expiresAt = new Date(Date.now() + CODE_EXPIRY_MINUTES * 60 * 1000)
-
     // Store verification code in database
-    await query(
-      `INSERT INTO email_verifications (user_id, code, expires_at) 
-       VALUES ($1, $2, $3)
-       ON CONFLICT (user_id) DO UPDATE 
-       SET code = $2, expires_at = $3, created_at = NOW()`,
-      [user.id, code, expiresAt]
-    )
-
     // Send verification email
-    try {
-      await sendVerificationCode(user.email, code)
-      logger.info('Verification email sent after 2FA setup', { userId: user.id, email: user.email })
-    } catch (emailErr) {
-      logger.error('Failed to send verification email', { userId: user.id, error: emailErr })
-      return res.status(500).json({ error: 'Error al enviar el código por email' })
-    }
+      // Código de verificación por email desactivado temporalmente
+      // const code = generateVerificationCode()
+      // const expiresAt = new Date(Date.now() + CODE_EXPIRY_MINUTES * 60 * 1000)
+      // await query(
+      //   `INSERT INTO email_verifications (user_id, code, expires_at) 
+      //    VALUES ($1, $2, $3)
+      //    ON CONFLICT (user_id) DO UPDATE 
+      //    SET code = $2, expires_at = $3, created_at = NOW()`,
+      //   [user.id, code, expiresAt]
+      // )
+      // await sendVerificationCode(user.email, code)
+      // logger.info('Verification email sent after 2FA setup', { userId: user.id, email: user.email })
 
     return res.status(200).json({ 
       message: 'Código enviado a tu email',

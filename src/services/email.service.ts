@@ -1,5 +1,6 @@
-import nodemailer from 'nodemailer'
-import type { SendMailOptions } from 'nodemailer'
+/*   / import nodemailer from 'nodemailer'
+// import type { SendMailOptions } from 'nodemailer'
+import { sendMail as sendgridSendMail } from './sendgrid-mail.service'
 import { query } from '../db'
 import logger from '../utils/logger'
 import { config } from '../config'
@@ -94,11 +95,15 @@ async function sendMail(to: string, subject: string, html: string, text?: string
       encoding: 'utf-8'
     }
 
-    const info = await transporter.sendMail(mailOptions)
+    // Comentado: envío con nodemailer
+    // const info = await transporter.sendMail(mailOptions)
+    // await logEmail(to, subject)
+    // logger.info('Email sent', { to, subject, messageId: info?.messageId || messageId })
+    // return { success: true, info }
 
-    await logEmail(to, subject)
-    logger.info('Email sent', { to, subject, messageId: info?.messageId || messageId })
-    return { success: true, info }
+    // Nuevo: envío con SendGrid
+    await sendgridSendMail(to, subject, html, text)
+    return { success: true }
   } catch (err: any) {
     if (err instanceof EmailRateLimitError) {
       logger.warn('Email rate limit hit', { to })
@@ -380,3 +385,4 @@ export default {
   sendWelcomeEmail,
   send2FASetupInstructions
 }
+*/
