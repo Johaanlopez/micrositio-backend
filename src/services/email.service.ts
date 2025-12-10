@@ -1,4 +1,4 @@
-/*   / import nodemailer from 'nodemailer'
+// import nodemailer from 'nodemailer'
 // import type { SendMailOptions } from 'nodemailer'
 import { sendMail as sendgridSendMail } from './sendgrid-mail.service'
 import { query } from '../db'
@@ -16,41 +16,27 @@ class EmailRateLimitError extends Error {
 }
 
 // Transporter setup using env variables (secure TLS)
-const transporter = nodemailer.createTransport({
-  host: process.env.SMTP_HOST || config.wp.baseUrl,
-  port: Number(process.env.SMTP_PORT || 587),
-  secure: process.env.SMTP_SECURE === 'true' || false,
-  auth: {
-    user: process.env.SMTP_USER || '',
-    pass: process.env.SMTP_PASS || ''
-  },
-  tls: {
-    rejectUnauthorized: process.env.SMTP_REJECT_UNAUTHORIZED !== 'false'
-  },
-  // Mejoras para deliverability
-  pool: true, // Usar pool de conexiones para mejor rendimiento
-  maxConnections: 5,
-  maxMessages: 100,
-  rateDelta: 1000, // 1 segundo entre mensajes
-  rateLimit: 5 // 5 mensajes por segundo máximo
-})
+// const transporter = nodemailer.createTransport({ // Legacy SMTP (comentado)
+  // SendGrid no requiere configuración SMTP aquí
+  // Usar sendgrid-mail.service.ts para envío
+// ) // Legacy SMTP (comentado)
 
-// Ensure table for email logs exists (simple migration). Uses email_logs(email text, type text, sent_at timestamptz)
-;(async () => {
-  try {
-    await query(
-      `CREATE TABLE IF NOT EXISTS email_logs (
-        id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
-        email TEXT NOT NULL,
-        type TEXT NOT NULL,
-        sent_at timestamptz NOT NULL DEFAULT NOW()
-      )`
-    )
-  } catch (err) {
-    // If pgcrypto extension not available, fall back to UUID generation by client
-    logger.warn('Could not ensure email_logs table exists (non-fatal).', { err: (err as any)?.message || err })
-  }
-})()
+// (Deshabilitado) Migración automática de email_logs eliminada para evitar warnings si la BD no está disponible o no se usa email.
+// ;(async () => {
+//   try {
+//     await query(
+//       `CREATE TABLE IF NOT EXISTS email_logs (
+//         id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+//         email TEXT NOT NULL,
+//         type TEXT NOT NULL,
+//         sent_at timestamptz NOT NULL DEFAULT NOW()
+//       )`
+//     )
+//   } catch (err) {
+//     // If pgcrypto extension not available, fall back to UUID generation by client
+//     logger.warn('Could not ensure email_logs table exists (non-fatal).', { err: (err as any)?.message || err })
+//   }
+// })()
 
 async function canSendEmail(email: string): Promise<boolean> {
   // Count emails sent in the last hour for that recipient
@@ -72,10 +58,12 @@ async function sendMail(to: string, subject: string, html: string, text?: string
     if (!ok) throw new EmailRateLimitError('Email rate limit exceeded for recipient')
 
     // Generar Message-ID único para mejor tracking
-    const messageId = `<${Date.now()}.${Math.random().toString(36).substr(2, 9)}@${process.env.SMTP_DOMAIN || 'micrositio.com'}>`
+    const messageId = `<${Date.now()}.${Math.random().toString(36).substr(2, 9)}@${process.env.SENDGRID_FROM || 'micrositio.com'}>`
 
+    /*
+    // Legacy SMTP (comentado)
     const mailOptions: SendMailOptions = {
-      from: process.env.SMTP_FROM || `no-reply@${process.env.SMTP_DOMAIN || 'example.com'}`,
+      from: process.env.SENDGRID_FROM, // Single Sender Verification
       to,
       subject,
       text: text || undefined,
@@ -86,14 +74,15 @@ async function sendMail(to: string, subject: string, html: string, text?: string
         'X-Priority': '1' as const,
         'Importance': 'high' as const,
         'Message-ID': messageId,
-        'Reply-To': process.env.SMTP_FROM || process.env.SMTP_USER || '',
+        'Reply-To': process.env.SENDGRID_FROM, // Single Sender Verification
         'X-Auto-Response-Suppress': 'OOF, AutoReply',
-        'List-Unsubscribe': `<mailto:${process.env.SMTP_USER}?subject=unsubscribe>`,
+        'List-Unsubscribe': `<mailto:${process.env.SENDGRID_FROM}?subject=unsubscribe>`, // Single Sender Verification
       },
       // Configuración adicional
       priority: 'high',
       encoding: 'utf-8'
     }
+    */
 
     // Comentado: envío con nodemailer
     // const info = await transporter.sendMail(mailOptions)
@@ -385,4 +374,3 @@ export default {
   sendWelcomeEmail,
   send2FASetupInstructions
 }
-*/

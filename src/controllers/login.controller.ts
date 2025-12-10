@@ -39,10 +39,7 @@ export async function login(req: Request, res: Response) {
       }
     }
 
-    // Check active
-    if (!user.is_active) {
-      return res.status(403).json({ error: 'Account not active' })
-    }
+    // Email activation check removed: only password and 2FA required
 
     // Compare password
     const match = await comparePassword(password, user.password_hash)

@@ -1,14 +1,19 @@
 import { Pool, QueryResult, QueryResultRow } from 'pg'
+import dotenv from 'dotenv'
+import path from 'path'
+
+// Cargar variables desde .env local
+dotenv.config({ path: path.resolve(process.cwd(), '.env') })
 
 console.log('=== ARCHIVO DB CARGADO ===')
 
 
 const pool = new Pool({
-  user: process.env.DB_USER,
-  password: process.env.DB_PASS,
-  host: process.env.DB_HOST,
-  port: Number(process.env.DB_PORT),
-  database: process.env.DB_NAME,
+  user: process.env.PGUSER,
+  password: process.env.PGPASSWORD,
+  host: process.env.PGHOST,
+  port: Number(process.env.PGPORT),
+  database: process.env.PGDATABASE,
 })
 
 console.log('=== POOL CREADO CON USUARIO ADMIN ===')
