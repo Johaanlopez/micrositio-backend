@@ -66,7 +66,7 @@ export async function findUserByMatricula(matricula: string): Promise<User | nul
   return res.rows[0] ?? null
 }
 
-export async function findUserById(id: string): Promise<User | null> {
+export async function findUserById(id: string | number): Promise<User | null> {
   const res = await query<User>('SELECT * FROM users WHERE id = $1 LIMIT 1', [id])
   return res.rows[0] ?? null
 }

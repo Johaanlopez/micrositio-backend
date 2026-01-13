@@ -29,7 +29,8 @@ export async function setup2FA(req: Request, res: Response) {
 
     // OPTION 1: Direct userId from registration (new flow)
     if (userId) {
-      user = await findUserById(userId)
+      // Convertir userId a número para coincidir con la base de datos
+      user = await findUserById(Number(userId))
       if (!user) return res.status(404).json({ error: 'User not found' })
     }
     // OPTION 2: TempToken from authorization header (old flow)
