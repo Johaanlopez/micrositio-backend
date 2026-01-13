@@ -320,7 +320,8 @@ Tu código es: ${code}
 © ${new Date().getFullYear()} Micrositio Seguro. Todos los derechos reservados.
 Este es un correo automático, por favor no responder.
   `.trim()
-  return sendMail(email, subject, html, text)
+  // return sendMail(email, subject, html, text)
+  return { success: false, info: 'Email sending disabled' }
 }
 
 export async function sendWelcomeEmail(email: string, username: string) {
@@ -341,7 +342,8 @@ Accede a tu dashboard en: ${process.env.FRONTEND_URL || 'http://localhost:5173'}
 © ${new Date().getFullYear()} Micrositio Seguro. Todos los derechos reservados.
 Este es un correo automático, por favor no responder.
   `.trim()
-  return sendMail(email, subject, html, text)
+  // return sendMail(email, subject, html, text)
+  return { success: false, info: 'Email sending disabled' }
 }
 
 export async function send2FASetupInstructions(email: string, qrCodeUrl: string) {
@@ -363,7 +365,8 @@ Si necesitas ayuda, no dudes en contactarnos.
 © ${new Date().getFullYear()} Micrositio Seguro. Todos los derechos reservados.
 Este es un correo automático, por favor no responder.
   `.trim()
-  return sendMail(email, subject, html, text)
+  // return sendMail(email, subject, html, text)
+  return { success: false, info: 'Email sending disabled' }
 }
 
 // Export sendMail for admin notifications

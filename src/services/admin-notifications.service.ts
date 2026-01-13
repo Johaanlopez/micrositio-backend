@@ -62,7 +62,7 @@ Usuario: ${userData.username}
 Fecha: ${new Date().toLocaleString('es-MX', { timeZone: 'America/Mexico_City' })}
     `
     
-    await sendMail(ADMIN_EMAIL, subject, html, text)
+    // await sendMail(ADMIN_EMAIL, subject, html, text)
     logger.info('Admin notified of new registration', { email: userData.email })
   } catch (err: any) {
     logger.error('Failed to notify admin of registration', { 
@@ -169,7 +169,7 @@ Si es un usuario legítimo, agrégalo a authorized_users en la base de datos.
 Micrositio Seguro - Sistema de Alertas
     `
     
-    await sendMail(ADMIN_EMAIL, subject, html, text)
+    // await sendMail(ADMIN_EMAIL, subject, html, text)
     logger.info('Admin notified of unauthorized attempt', { 
       email: attemptData.email,
       matricula: attemptData.matricula 
@@ -258,7 +258,7 @@ Fecha:     ${attemptData.timestamp.toLocaleString('es-MX', { timeZone: 'America/
 El sistema redirigió al usuario a la página de inicio de sesión.
     `
     
-    await sendMail(ADMIN_EMAIL, subject, html, text)
+    // await sendMail(ADMIN_EMAIL, subject, html, text)
     logger.info('Admin notified of duplicate registration attempt', { email: attemptData.email })
   } catch (err: any) {
     logger.error('Failed to notify admin of duplicate attempt', { error: err?.message || err })

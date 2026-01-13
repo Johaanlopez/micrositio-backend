@@ -4,6 +4,17 @@ dist/
 .env.*.local
 npm-debug.log*
 
+# Ignorar archivos de configuración y variables de entorno
+.env.example
+.env.local
+.env.production
+.env.development
+
+# Ignorar archivos de credenciales y configuraciones sensibles
+*.key
+*.pem
+*.crt
+
 logs/
 *.log
 temp-hash.js
